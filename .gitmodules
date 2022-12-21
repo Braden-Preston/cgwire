@@ -1,0 +1,8 @@
+[submodule "kitsu"]
+	path = kitsu
+	url = https://github.com/Braden-Preston/kitsu.git
+  branch = master
+[submodule "zou"]
+	path = zou
+	url = https://github.com/Braden-Preston/zou.git
+  branch = master
