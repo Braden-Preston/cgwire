@@ -1,0 +1,36 @@
+[Unit]
+Description=Gunicorn instance to serve the Zou API
+After=network.target
+
+[Service]
+User=zou
+Group=www-data
+WorkingDirectory=/opt/zou
+# General environment
+Environment="PATH=/opt/zou/zouenv/bin:/usr/bin"
+Environment="PREVIEW_FOLDER=/opt/zou/previews"
+Environment="TMP_DIR=/opt/zou/tmp"
+Environment="DEBUG=$DEBUG"
+Environment="SECRET_KEY=$SECRET_KEY"
+Environment="AUTH_STRATEGY=$AUTH_STRATEGY"
+# Database connection
+Environment="DB_HOST=$DB_HOST"
+Environment="DB_PORT=$DB_PORT"
+Environment="DB_DATABASE=$DB_DATABASE"
+Environment="DB_USERNAME=$DB_USERNAME"
+Environment="DB_PASSWORD=$DB_PASSWORD"
+# Active Directory
+Environment="LDAP_PORT=$LDAP_PORT"
+Environment="LDAP_BASE_DN=$LDAP_BASE_DN"
+Environment="LDAP_FALLBACK=$LDAP_FALLBACK"
+Environment="LDAP_DOMAIN=$LDAP_DOMAIN"
+Environment="LDAP_IS_AD=$LDAP_IS_AD"
+# Multi-Factor Authentication
+Environment="RADIUS_CONFIG=$RADIUS_CONFIG"
+Environment="RADIUS_EXCLUDED_ACCOUNTS=$RADIUS_EXCLUDED_ACCOUNTS"
+Environment="RADIUS_FALLBACK=$RADIUS_FALLBACK"
+
+ExecStart=/opt/zou/zouenv/bin/gunicorn  -c /etc/zou/gunicorn.conf -b 127.0.0.1:5000 zou.app:app
+
+[Install]
+WantedBy=multi-user.target
