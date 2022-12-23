@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+
+# Set environment variables from .env file
+export $(grep -v '^#' ../.env | xargs)
+
+# Warn the hell out of the user, because this is a highly dangerous operation
+echo -e "\n\033[0;31mDANGER: Are you sure you want to DESTROY the database?\033[0m [Y/n]"
+echo -e "\nThe following will be WIPED OUT:"
+echo -e "    - database, tables, passwords, indexes"
+echo -e "    - projects, shots, assets, comments"
+
+# Read answer and only continue if valid
+read answer
+if [ "$answer" != "${answer#[Yy]}" ]; then
+
+  # Completely destroy the database
+  PGPASSWORD=$DB_PASSWORD psql -h localhost -U $DB_USERNAME -c "drop database $DB_DATABASE;" 
+  
+fi

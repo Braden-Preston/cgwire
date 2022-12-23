@@ -1,0 +1,12 @@
+#!/usr/bin/bash
+
+# Download dependencies for Kitsu
+npm run --prefix $CGWIRE/kitsu install
+
+# Build static files for Kitsu
+npm run --prefix $CGWIRE/kitsu build
+
+# Copy static files to target directory
+sudo mkdir -p /opt/kitsu/dist
+sudo rm -rf /opt/kitsu/dist
+sudo cp -R $CGWIRE/kitsu/dist /opt/kitsu/

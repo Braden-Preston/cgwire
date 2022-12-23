@@ -1,0 +1,13 @@
+#!/usr/bin/bash
+
+# Create a new database
+PGPASSWORD=$DB_PASSWORD psql -h localhost -U $DB_USERNAME -c "CREATE DATABASE $DB_DATABASE;"
+PGPASSWORD=$DB_PASSWORD psql -h localhost -U $DB_USERNAME -d postgres -c "ALTER user postgres WITH password '$DB_PASSWORD';"
+
+# Apply migrations and apply entity types
+sudo -u zou DB_PASSWORD=$DB_PASSWORD zou init-db
+sudo -u zou DB_PASSWORD=$DB_PASSWORD zou init-data
+
+# Create an admin user with $ADMIN_EMAIL & $ADMIN_PASSWORD and set their login name to $ADMIN_LOGIN
+sudo -u zou DB_PASSWORD=$DB_PASSWORD zou create-admin $ADMIN_EMAIL --password $ADMIN_PASSWORD &>/dev/null
+PGPASSWORD=$DB_PASSWORD psql -h localhost -U $DB_USERNAME -d zoudb -c "UPDATE person SET desktop_login = '$ADMIN_LOGIN' WHERE email = '$ADMIN_EMAIL'"

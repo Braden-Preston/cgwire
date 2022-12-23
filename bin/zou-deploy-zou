@@ -1,0 +1,30 @@
+#!/usr/bin/bash
+
+# Install local copy of zou to target's environment
+sudo /opt/zou/zouenv/bin/pip3 install -e $CGWIRE/zou
+
+# Configure Gunicorn
+sudo mkdir -p /etc/zou
+sudo cp files/gunicorn.conf /etc/zou/gunicorn.conf
+sudo cp files/gunicorn-events.conf /etc/zou/gunicorn-events.config
+
+# Configure systemd services
+sudo cp files/gen/zou.service /etc/systemd/system/zou.service
+sudo cp files/gen/zou-events.service /etc/systemd/system/zou-events.service
+
+# Configure Nginx
+sudo rm /etc/nginx/sites-enabled/default
+sudo rm /etc/nginx/sites-available/zou
+sudo cp files/zou.nginx /etc/nginx/sites-available/zou
+sudo ln -s /etc/nginx/sites-available/zou /etc/nginx/sites-enabled
+
+# Copy Radius configuration
+sudo cp files/pam_radius.conf /etc/pam_radius.conf
+
+# Reload all services
+sudo systemctl enable zou
+sudo systemctl enable zou-events
+sudo systemctl daemon-reload
+sudo systemctl restart zou
+sudo systemctl restart zou-events
+sudo systemctl restart nginx
